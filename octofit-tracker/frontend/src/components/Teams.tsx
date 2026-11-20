@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { getJson } from '../api/client.js';
 import { useApiResource } from '../hooks/useApiResource.js';
 import { CapabilityCard } from './CapabilityCard.js';
 
@@ -8,7 +10,8 @@ type Team = {
 };
 
 export default function Teams() {
-  const { data, loading, error } = useApiResource<{ teams: Team[] }>('/api/teams');
+  const loadTeams = useCallback(() => getJson<{ teams: Team[] }>('/api/teams'), []);
+  const { data, loading, error } = useApiResource(loadTeams);
   const teams = data?.teams ?? [];
 
   return (

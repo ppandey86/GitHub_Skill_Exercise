@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { getJson } from '../api/client.js';
 import { useApiResource } from '../hooks/useApiResource.js';
 import { CapabilityCard } from './CapabilityCard.js';
 
@@ -8,7 +10,8 @@ type Activity = {
 };
 
 export default function Activities() {
-  const { data, loading, error } = useApiResource<{ activities: Activity[] }>('/api/activities');
+  const loadActivities = useCallback(() => getJson<{ activities: Activity[] }>('/api/activities'), []);
+  const { data, loading, error } = useApiResource(loadActivities);
   const activities = data?.activities ?? [];
 
   return (

@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { getJson } from '../api/client.js';
 import { useApiResource } from '../hooks/useApiResource.js';
 import { CapabilityCard } from './CapabilityCard.js';
 
@@ -8,7 +10,8 @@ type LeaderboardEntry = {
 };
 
 export default function Leaderboard() {
-  const { data, loading, error } = useApiResource<{ leaderboard: LeaderboardEntry[] }>('/api/leaderboard');
+  const loadLeaderboard = useCallback(() => getJson<{ leaderboard: LeaderboardEntry[] }>('/api/leaderboard'), []);
+  const { data, loading, error } = useApiResource(loadLeaderboard);
   const entries = data?.leaderboard ?? [];
 
   return (

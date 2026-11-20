@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { getJson } from '../api/client.js';
 
-export function useApiResource<T>(path: string) {
+export function useApiResource<T>(load: () => Promise<T>) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    getJson<T>(path)
+    load()
       .then((result) => {
         if (active) setData(result);
       })
@@ -22,7 +21,7 @@ export function useApiResource<T>(path: string) {
     return () => {
       active = false;
     };
-  }, [path]);
+  }, [load]);
 
   return { data, loading, error };
 }

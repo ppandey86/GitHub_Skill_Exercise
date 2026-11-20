@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { getJson } from '../api/client.js';
 import { useApiResource } from '../hooks/useApiResource.js';
 import { CapabilityCard } from './CapabilityCard.js';
 
@@ -12,8 +14,11 @@ type Workout = {
 const userEmail = 'mona@example.com';
 
 export default function Workouts() {
-  const path = `/api/workouts/suggestions/${encodeURIComponent(userEmail)}`;
-  const { data, loading, error } = useApiResource<{ suggestions: Workout[] }>(path);
+  const loadSuggestions = useCallback(
+    () => getJson<{ suggestions: Workout[] }>(`/api/workouts/suggestions/${encodeURIComponent(userEmail)}`),
+    [],
+  );
+  const { data, loading, error } = useApiResource(loadSuggestions);
   const suggestions = data?.suggestions ?? [];
 
   return (
